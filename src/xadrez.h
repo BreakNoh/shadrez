@@ -2,47 +2,77 @@
 #define XADREZ_H
 
 #include <stdint.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
 
-#define TAMANHO_TABULEIRO 8
+#define u8 uint8_t
+#define i8 int8_t
 
-#define VAZIO 0
-#define PEAO 1 
-#define BISPO 2
-#define CAVALO 3
-#define TORRE 4
-#define RAINHA 5
-#define REI 6
+#define sign(x) ((x > 0) ? 1 : (x < 0 ? -1 : 0))
+#define MIN(a, b) ((a < b)? (a) : (b))
 
-#define FLAG_CAPTURA 1
+#define TAM_TABULEIRO 8
 
-#define FLAG_CHECK (1 << 1)
-#define FLAG_CHECK_MATE (1 << 2)
+typedef enum {
+	AVANCO,
+	CAPTURA,
+	CHECK,
+	CHECKMATE,
 
-#define FLAG_ROQUE_REI (1 << 3)
-#define FLAG_ROQUE_RAINHA (1 << 4)
+	AVANCO_DUPLO,
+	EN_PASSANT,
+	PROMOCAO_BISPO,
+	PROMOCAO_CAVALO,
+	PROMOCAO_TORRE
+	PROMOCAO_RAINHA,
 
-#define FLAG_EN_PASSANT (1 << 5)
-#define FLAG_PROMO_BISPO (1 << 6)
-#define FLAG_PROMO_CAVALO (1 << 7)
-#define FLAG_PROMO_TORRE (1 << 8)
-#define FLAG_PROMO_RAINHA (1 << 9)
+	ROQUE_REI,
+	ROQUE_RAINHA
+} Jogada;
 
-typedef Peca uint8_t;
+typedef enum {
+	VAZIO,
+	PEAO,
+	BISPO,
+	CAVALO,
+	TORRE,
+	RAINHA,
+	REI
+} Classe;
 
-typedef struct Movimento {
-	Peca peca;
-	uint16_t flags;
-	uint8_t x1;
-	uint8_t y1;
-	uint8_t x2;
-	uint8_t y2;
+typedef enum {
+	BRANCA,
+	PRETA,
+	INDEFINIDA
+} Cor;
+
+typedef struct {
+	Classe classe;
+	Cor cor;
+} Peca;
+
+typedef struct {
+	i8 x1;
+	i8 y1;
+	i8 x2;
+	i8 y2;
 } Movimento;
-typedef struct Tabuleiro {
-	Peca posicoes[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
+
+typedef struct  {
+	Peca posicoes[TAM_TABULEIRO][TAM_TABULEIRO];
 	uint32_t turno;
 } Tabuleiro;
 
-int parsear_comando(char *comando)
-bool movimento_valido(Tabuleiro *tab, char *mov);
+bool esta_dentro(i8 x, i8 y) {
+    return x >= 0 && x < TAM_TABULEIRO && y >= 0 && y < TAM_TABULEIRO;
+}
+bool sao_mesma_peca(Peca a, Peca b) {
+	return a.classe == b.classe && a.cor == b.cor;
+}
+
+
+Peca *raycast(Peca tab[8][8], Movimento mov, u8 *x, u8 *y);
+bool validar_movimento(i8 tab[8][8], Movimento mov);
 
 #endif // !XADREZ_H

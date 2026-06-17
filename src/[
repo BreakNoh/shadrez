@@ -1,9 +1,0 @@
-#include <stdbool.h>
-#include <stdint.h>
-
-#define u8 uint8_t
-#define i8 int8_t
-
-u8 procurar_cavlo(i8 tab[8][8], bool branca, u8 x2, u8 y2, u8 *x1, u8 *y1) {}
-
-i8 encontrar_peca(i8 tab[8][8], i8 peca, u8 x2, u8 y2, u8 *x1, u8 *y1) {}
