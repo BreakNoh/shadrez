@@ -52,7 +52,28 @@ Colisao checar_colisao(Peca tab[8][8], Movimento mov) {
     return BLOQUEADO; // bloqueado por inimigo
 }
 
-bool validar_peao(Peca tab[8][8], Movimento mov) { return false; } // [TODO]
+bool validar_peao(Peca tab[8][8], Movimento mov) {
+    Peca peca = tab[mov.y1][mov.x1];
+    if (peca.classe != PEAO) {
+        return false;
+    }
+
+    i8 dy = mov.y2 - mov.y1;
+    bool casa_inicial = (peca.cor == PRETA && mov.y1 == 6) ||
+                        (peca.cor == BRANCA && mov.y1 == 1);
+
+    if (abs(dy) > 2) {
+        // avanço vertical maior que 2
+        return false;
+    }
+
+    if ((dy > 0 && peca.cor == PRETA) || (dy < 0 && peca.cor == BRANCA)) {
+        // branca descendo ou preta subindo
+        return false;
+    }
+
+    return false;
+} // [TODO]
 
 bool validar_bispo(Peca tab[8][8], Movimento mov) {
     if (tab[mov.y1][mov.x1].classe != BISPO) {
