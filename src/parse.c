@@ -2,101 +2,94 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-bool eh_maiuscula(char c) { return c >= 'A' && c <= 'Z'; }
+// Tokens
+// Pecas: C B T D R
+// Coluna: a-h
+// Linha: 1-8
+// Captura: x
+// Coluna: a-h
+// Linha: 1-8
+// Check: +
+// Checkmate: #
 
-bool eh_coluna(char c) { return c >= 'a' && c <= 'h'; }
-bool eh_linha(char c) { return c >= '1' && c <= '8'; }
+// Roque: O-O O-O-O
 
-Classe char_pra_classe(char c) {
-  switch (c) {
-  case 'C':
-    return CAVALO;
-  case 'B':
-    return BISPO;
-  case 'T':
-    return TORRE;
-  case 'R':
-    return REI;
-  case 'D':
-    return RAINHA;
-  default:
-    return VAZIO;
-  }
-}
+typedef enum { TKN_NUL, TKN_PECA, TKN_COL, TKN_LIN, TKN_CAP } Token;
 
-#define ERRO_DE_CLASSE 1
-#define ERRO_DE_POSICAO 1
-
-int parse_classe(char c, int i, Classe *peca, Classe *promo) {
-  Classe cls = char_pra_classe(c);
-  if (cls == VAZIO) {
-    return ERRO_DE_CLASSE;
-  }
-
-  if (i == 0) { // X...
-    *peca = cls;
+int parse_peca(char ch, Jogada *jog, Token *ult_tkn) {
+    if (*ult_tkn != TKN_NUL) {
+        // [TODO] de peca não no inicio
+        return 1;
+    }
+    jog->peca = (Classe)ch;
+    *ult_tkn = TKN_PECA;
     return 0;
-  } else if (*promo == VAZIO) { // ...X...
-    *promo = cls;
+}
+
+int parse_linha(char ch, Jogada *jog, Token *ult_tkn) {
+    if (jog->alvo.y != -1) {
+        jog->origem.y = jog->alvo.y;
+    } else if (jog->origem.y != -1) {
+        // [TODO] mais de 2 char de coluna
+        return 1;
+    }
+    jog->alvo.y = ch - '1';
+    *ult_tkn = TKN_LIN;
     return 0;
-  } else { // X...X...X
-    return ERRO_DE_CLASSE;
-  }
 }
 
-int parse_coluna(char c, int *x1, int *x2) {
-  int col = c - 'a';
-
-  if (*x2 != -1 && *x1 == -1) {
-    *x1 = *x2;
-    *x2 = col;
-  } else if (*x1 == -1) {
-    *x2 = col;
-  } else {
-    return ERRO_DE_POSICAO;
-  }
-
-  return 0;
+int parse_coluna(char ch, Jogada *jog, Token *ult_tkn) {
+    if (jog->alvo.x != -1) {
+        jog->origem.x = jog->alvo.x;
+    } else if (jog->origem.x != -1) {
+        // [TODO] mais de 2 char de linha
+        return 1;
+    }
+    jog->alvo.x = ch - 'a';
+    *ult_tkn = TKN_COL;
+    return 0;
 }
 
-int parse_linha(char c, int *y1, int *y2) {
-  int col = c - 'a';
+int parse_captura(Jogada *jog, Token *ult_tkn) {
+    if (jog->captura) {
+        // [TODO] mais de 1 x
+        return 1;
+    }
+    jog->captura = true;
 
-  if (*y2 != -1 && *y1 == -1) {
-    *y1 = *y2;
-    *y2 = col;
-  } else if (*y1 == -1) {
-    *y2 = col;
-  } else {
-    return ERRO_DE_POSICAO;
-  }
-
-  return 0;
+    *ult_tkn = TKN_CAP;
+    return 0;
 }
 
-int parse_comando(char *cmd) {
-  Classe peca = PEAO;
-  Classe promo = VAZIO;
-  int x1 = -1, y1 = -1, x2 = -1, y2 = -1;
+Jogada parse_comando(char *cmd) {
+    Jogada jogada = {PEAO, false, {-1, -1}, {-1, -1}};
+    Token ult_tkn = TKN_NUL;
 
-  int i = 0;
+    int i = 0;
+    while (cmd[i] != '\0') {
+        char ch = cmd[i];
 
-  while (cmd[i] != '\0') {
-    char tkn = cmd[i];
-    int res = 0;
+        switch (ch) {
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'R':
+        case 'T':
+            parse_peca(ch, &jogada, &ult_tkn);
+            break;
+        case '1' ... '8':
+            parse_linha(ch, &jogada, &ult_tkn);
+            break;
+        case 'a' ... 'h':
+            parse_coluna(ch, &jogada, &ult_tkn);
+            break;
+        case 'x':
+            parse_captura(&jogada, &ult_tkn);
+            break;
+        }
 
-    if (eh_maiuscula(tkn)) {
-      res = parse_classe(tkn, i, &peca, &promo);
-    } else if (eh_coluna(tkn)) {
-      res = parse_coluna(tkn, &x1, &x2);
-    } else if (eh_linha(tkn)) {
-      res = parse_coluna(tkn, &y1, &y2);
+        i++;
     }
 
-    if (res != 0) {
-      return res;
-    }
-  }
-
-  printf("%d %d %d, %d %d", peca, x1, y1, x2, y2);
+    return jogada;
 }

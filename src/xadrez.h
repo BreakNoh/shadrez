@@ -29,16 +29,16 @@ typedef enum {
 
 	ROQUE_REI,
 	ROQUE_RAINHA
-} Jogada;
+} _Jogada;
 
 typedef enum {
-	VAZIO,
-	PEAO,
-	BISPO,
-	CAVALO,
-	TORRE,
-	RAINHA,
-	REI
+	VAZIO = 0,
+	PEAO = 'P',
+	BISPO = 'B',
+	CAVALO = 'C',
+	TORRE = 'T',
+	RAINHA = 'D',
+	REI = 'R'
 } Classe;
 
 typedef enum {
@@ -64,15 +64,24 @@ typedef struct  {
 	uint32_t turno;
 } Tabuleiro;
 
-bool esta_dentro(i8 x, i8 y) {
-    return x >= 0 && x < TAM_TABULEIRO && y >= 0 && y < TAM_TABULEIRO;
-}
-bool sao_mesma_peca(Peca a, Peca b) {
-	return a.classe == b.classe && a.cor == b.cor;
-}
-
+bool esta_dentro(i8 x, i8 y);
+bool sao_mesma_peca(Peca a, Peca b);
 
 Peca *raycast(Peca tab[8][8], Movimento mov, u8 *x, u8 *y);
 bool validar_movimento(i8 tab[8][8], Movimento mov);
+
+typedef struct {
+    Classe peca;
+	bool captura;
+    struct {
+        int x;
+        int y;
+    } alvo;
+    struct {
+        int x;
+        int y;
+    } origem;
+} Jogada;
+Jogada parse_comando(char *cmd);
 
 #endif // !XADREZ_H

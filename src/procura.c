@@ -128,55 +128,56 @@ Resolucao procurar_rainha(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x,
     return procurar_peca_raio(tab, peca, x2, y2, x, y, dirs, 8);
 }
 
-Resolucao procurar_peao(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x, i8 *y,
-                        Jogada jogada) {
-    u8 contagem = 0;
-    i8 cor = peca.cor;
-
-    if (jogada == AVANCO) {
-    }
-    if (jogada == EN_PASSANT) {
-    }
-    if (jogada == CAPTURA) {
-    }
-
-    if (captura) {
-        for (i8 i = -1; i <= 1; i++) {
-            if (i == 0) {
-                continue;
-            }
-
-            if (tab[y2 - cor][x2 + i] == peca) {
-                contagem++;
-                *x = x2 + i;
-                *y = y2 - cor;
-            }
-        }
-    } else {
-        for (i8 i = 1; i <= 2; i++) {
-            i8 visitada = tab[y2 - (i * cor)][x2];
-            if (visitada == peca) {
-                contagem++;
-                *x = x2;
-                *y = y2 - (i * cor);
-            } else if (visitada != 0) {
-                break;
-            }
-        }
-    }
-    switch (contagem) {
-    case 0:
-        *x = -1;
-        *y = -1;
-        return NENHUMA;
-    case 1:
-        return ENCONTRADA;
-    default:
-        *x = -1;
-        *y = -1;
-        return AMBIGUO;
-    }
-}
+// Resolucao procurar_peao(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x, i8
+// *y,
+//                         Jogada jogada) {
+//     u8 contagem = 0;
+//     i8 cor = peca.cor;
+//
+//     if (jogada == AVANCO) {
+//     }
+//     if (jogada == EN_PASSANT) {
+//     }
+//     if (jogada == CAPTURA) {
+//     }
+//
+//     if (captura) {
+//         for (i8 i = -1; i <= 1; i++) {
+//             if (i == 0) {
+//                 continue;
+//             }
+//
+//             if (tab[y2 - cor][x2 + i] == peca) {
+//                 contagem++;
+//                 *x = x2 + i;
+//                 *y = y2 - cor;
+//             }
+//         }
+//     } else {
+//         for (i8 i = 1; i <= 2; i++) {
+//             i8 visitada = tab[y2 - (i * cor)][x2];
+//             if (visitada == peca) {
+//                 contagem++;
+//                 *x = x2;
+//                 *y = y2 - (i * cor);
+//             } else if (visitada != 0) {
+//                 break;
+//             }
+//         }
+//     }
+//     switch (contagem) {
+//     case 0:
+//         *x = -1;
+//         *y = -1;
+//         return NENHUMA;
+//     case 1:
+//         return ENCONTRADA;
+//     default:
+//         *x = -1;
+//         *y = -1;
+//         return AMBIGUO;
+//     }
+// }
 
 i8 procurar_rei(i8 tab[8][8], i8 peca, u8 x2, u8 y2, i8 *x1, i8 *y1) {
     u8 contagem = 0;
@@ -209,21 +210,21 @@ i8 procurar_rei(i8 tab[8][8], i8 peca, u8 x2, u8 y2, i8 *x1, i8 *y1) {
     }
 }
 
-Resolucao encontrar_peca(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x1,
-                         i8 *y1) {
-    switch (classe_peca(peca)) {
-    case PEAO:
-        return procurar_peao(tab, peca, false, x2, y2, x1, y1);
-    case BISPO:
-        return procurar_bispo(tab, peca, x2, y2, x1, y1);
-    case CAVALO:
-        return procurar_cavalo(tab, peca, x2, y2, x1, y1);
-    case TORRE:
-        return procurar_torre(tab, peca, x2, y2, x1, y1);
-    case RAINHA:
-        return procurar_rainha(tab, peca, x2, y2, x1, y1);
-    case REI:
-        return procurar_rei(tab, peca, x2, y2, x1, y1);
-    };
-    return NENHUMA;
-}
+// Resolucao encontrar_peca(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x1,
+//                          i8 *y1) {
+//     switch (classe_peca(peca)) {
+//     case PEAO:
+//         return procurar_peao(tab, peca, false, x2, y2, x1, y1);
+//     case BISPO:
+//         return procurar_bispo(tab, peca, x2, y2, x1, y1);
+//     case CAVALO:
+//         return procurar_cavalo(tab, peca, x2, y2, x1, y1);
+//     case TORRE:
+//         return procurar_torre(tab, peca, x2, y2, x1, y1);
+//     case RAINHA:
+//         return procurar_rainha(tab, peca, x2, y2, x1, y1);
+//     case REI:
+//         return procurar_rei(tab, peca, x2, y2, x1, y1);
+//     };
+//     return NENHUMA;
+// }

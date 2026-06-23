@@ -89,9 +89,9 @@ bool validar_bispo(Peca tab[8][8], Movimento mov) {
     if (abs(dx) != abs(dy) || (dx == 0 && dy == 0)) {
         return false;
     } // movimento não diagonal ou não sai do lugar
-    if (checar_colisao(tab, mov) == COLIDE) {
-        return false;
-    }
+    // if (checar_colisao(tab, mov) == COLIDE) {
+    //     return false;
+    // }
 
     return true;
 }
@@ -112,9 +112,9 @@ bool validar_torre(Peca tab[8][8], Movimento mov) {
         return false;
     } // movimento não reto ou parado
 
-    if (checar_colisao(tab, mov) == COLIDE) {
-        return false;
-    }
+    // if (checar_colisao(tab, mov) == COLIDE) {
+    //     return false;
+    // }
 
     return true;
 }
