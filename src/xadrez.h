@@ -14,22 +14,7 @@
 
 #define TAM_TABULEIRO 8
 
-typedef enum {
-	AVANCO,
-	CAPTURA,
-	CHECK,
-	CHECKMATE,
-
-	AVANCO_DUPLO,
-	EN_PASSANT,
-	PROMOCAO_BISPO,
-	PROMOCAO_CAVALO,
-	PROMOCAO_TORRE,
-	PROMOCAO_RAINHA,
-
-	ROQUE_REI,
-	ROQUE_RAINHA
-} _Jogada;
+typedef enum { ENCONTRADA, NENHUMA, AMBIGUO } Resolucao;
 
 typedef enum {
 	VAZIO = 0,
@@ -42,9 +27,9 @@ typedef enum {
 } Classe;
 
 typedef enum {
-	BRANCA,
-	PRETA,
-	INDEFINIDA
+	BRANCA = 'B',
+	PRETA = 'P',
+	INDEFINIDA = '-'
 } Cor;
 
 typedef struct {
@@ -82,6 +67,8 @@ typedef struct {
         i8 y;
     } origem;
 } Jogada;
-Jogada parse_comando(char *cmd);
+
+Jogada parse_comando(char *cmd, Cor cor);
+Resolucao resolver_jogada(Peca tab[8][8], Jogada *jog);
 
 #endif // !XADREZ_H

@@ -21,7 +21,7 @@ int parse_peca(char ch, Jogada *jog, Token *ult_tkn) {
         // [TODO] de peca não no inicio
         return 1;
     }
-    jog->peca = (Classe)ch;
+    jog->peca.classe = ch;
     *ult_tkn = TKN_PECA;
     return 0;
 }
@@ -61,8 +61,8 @@ int parse_captura(Jogada *jog, Token *ult_tkn) {
     return 0;
 }
 
-Jogada parse_comando(char *cmd) {
-    Jogada jogada = {PEAO, false, {-1, -1}, {-1, -1}};
+Jogada parse_comando(char *cmd, Cor cor) {
+    Jogada jogada = {{PEAO, cor}, false, {-1, -1}, {-1, -1}};
     Token ult_tkn = TKN_NUL;
 
     int i = 0;

@@ -1,7 +1,5 @@
 #include "xadrez.h"
 
-typedef enum { ENCONTRADA, NENHUMA, AMBIGUO } Resolucao;
-
 Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
                           i8 *y) {
     u8 contagem = 0;
@@ -235,22 +233,3 @@ Resolucao resolver_jogada(Peca tab[8][8], Jogada *jog) {
         return NENHUMA;
     }
 }
-
-// Resolucao encontrar_peca(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x1,
-//                          i8 *y1) {
-//     switch (classe_peca(peca)) {
-//     case PEAO:
-//         return procurar_peao(tab, peca, false, x2, y2, x1, y1);
-//     case BISPO:
-//         return procurar_bispo(tab, peca, x2, y2, x1, y1);
-//     case CAVALO:
-//         return procurar_cavalo(tab, peca, x2, y2, x1, y1);
-//     case TORRE:
-//         return procurar_torre(tab, peca, x2, y2, x1, y1);
-//     case RAINHA:
-//         return procurar_rainha(tab, peca, x2, y2, x1, y1);
-//     case REI:
-//         return procurar_rei(tab, peca, x2, y2, x1, y1);
-//     };
-//     return NENHUMA;
-// }
