@@ -2,7 +2,8 @@
 
 typedef enum { ENCONTRADA, NENHUMA, AMBIGUO } Resolucao;
 
-Resolucao procurar_cavalo(i8 tab[8][8], i8 peca, u8 x2, u8 y2, i8 *x, i8 *y) {
+Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
+                          i8 *y) {
     u8 contagem = 0;
 
     for (i8 i = -1; i <= 1; i++) {
@@ -22,13 +23,13 @@ Resolucao procurar_cavalo(i8 tab[8][8], i8 peca, u8 x2, u8 y2, i8 *x, i8 *y) {
             i8 dx1 = *x >= 0 ? *x : x2 + j;     //
             i8 dy2 = *y >= 0 ? *y : y2 + i * 2; //
 
-            if (esta_dentro(dx2, dy1) && tab[dy1][dx2] == peca) {
+            if (esta_dentro(dx2, dy1) && sao_mesma_peca(tab[dy1][dx2], peca)) {
                 contagem++;
                 *x = dx2;
                 *y = dy1;
             }
 
-            if (esta_dentro(dx1, dy2) && tab[dy2][dx1] == peca) {
+            if (esta_dentro(dx1, dy2) && sao_mesma_peca(tab[dy2][dx1], peca)) {
                 contagem++;
                 *x = dx1;
                 *y = dy2;
@@ -50,7 +51,7 @@ Resolucao procurar_cavalo(i8 tab[8][8], i8 peca, u8 x2, u8 y2, i8 *x, i8 *y) {
     }
 }
 
-Resolucao procurar_peca_raio(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x,
+Resolucao procurar_peca_raio(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
                              i8 *y, i8 (*dirs)[2], u8 dirs_len) {
     u8 contagem = 0;
 
@@ -111,24 +112,24 @@ Resolucao procurar_peca_raio(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x,
     return (contagem == 0) ? NENHUMA : AMBIGUO;
 }
 
-Resolucao procurar_torre(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x,
+Resolucao procurar_torre(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
                          i8 *y) {
     i8 dirs[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
     return procurar_peca_raio(tab, peca, x2, y2, x, y, dirs, 4);
 }
-Resolucao procurar_bispo(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x,
+Resolucao procurar_bispo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
                          i8 *y) {
     i8 dirs[4][2] = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
     return procurar_peca_raio(tab, peca, x2, y2, x, y, dirs, 4);
 }
-Resolucao procurar_rainha(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x,
+Resolucao procurar_rainha(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
                           i8 *y) {
     i8 dirs[8][2] = {{1, 0}, {0, 1},  {-1, 0}, {0, -1},
                      {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
     return procurar_peca_raio(tab, peca, x2, y2, x, y, dirs, 8);
 }
 
-// Resolucao procurar_peao(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x, i8
+// Resolucao procurar_peao(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x, i8
 // *y,
 //                         Jogada jogada) {
 //     u8 contagem = 0;
@@ -179,7 +180,7 @@ Resolucao procurar_rainha(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x,
 //     }
 // }
 
-i8 procurar_rei(i8 tab[8][8], i8 peca, u8 x2, u8 y2, i8 *x1, i8 *y1) {
+i8 procurar_rei(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x1, i8 *y1) {
     u8 contagem = 0;
 
     for (i8 i = -1; i <= 1; i++) {
@@ -188,7 +189,7 @@ i8 procurar_rei(i8 tab[8][8], i8 peca, u8 x2, u8 y2, i8 *x1, i8 *y1) {
                 continue;
             }
 
-            if (tab[y2 + i][x2 + j] == peca) {
+            if (sao_mesma_peca(tab[y2 + i][x2 + j], peca)) {
                 contagem++;
                 *x1 = x2 + j;
                 *y1 = y2 + i;
@@ -210,7 +211,32 @@ i8 procurar_rei(i8 tab[8][8], i8 peca, u8 x2, u8 y2, i8 *x1, i8 *y1) {
     }
 }
 
-// Resolucao encontrar_peca(Peca tab[8][8], Peca peca, u8 x2, u8 y2, i8 *x1,
+Resolucao resolver_jogada(Peca tab[8][8], Jogada *jog) {
+    switch (jog->peca.classe) {
+    case PEAO:
+        // [TODO]
+        return NENHUMA;
+    case CAVALO:
+        return procurar_cavalo(tab, jog->peca, jog->alvo.x, jog->alvo.y,
+                               &jog->origem.x, &jog->origem.y);
+    case BISPO:
+        return procurar_bispo(tab, jog->peca, jog->alvo.x, jog->alvo.y,
+                              &jog->origem.x, &jog->origem.y);
+    case TORRE:
+        return procurar_torre(tab, jog->peca, jog->alvo.x, jog->alvo.y,
+                              &jog->origem.x, &jog->origem.y);
+    case RAINHA:
+        return procurar_rainha(tab, jog->peca, jog->alvo.x, jog->alvo.y,
+                               &jog->origem.x, &jog->origem.y);
+    case REI:
+        return procurar_rei(tab, jog->peca, jog->alvo.x, jog->alvo.y,
+                            &jog->origem.x, &jog->origem.y);
+    default:
+        return NENHUMA;
+    }
+}
+
+// Resolucao encontrar_peca(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x1,
 //                          i8 *y1) {
 //     switch (classe_peca(peca)) {
 //     case PEAO:

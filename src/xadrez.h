@@ -71,15 +71,15 @@ Peca *raycast(Peca tab[8][8], Movimento mov, u8 *x, u8 *y);
 bool validar_movimento(i8 tab[8][8], Movimento mov);
 
 typedef struct {
-    Classe peca;
+    Peca peca;
 	bool captura;
     struct {
-        int x;
-        int y;
+        i8 x;
+        i8 y;
     } alvo;
     struct {
-        int x;
-        int y;
+        i8 x;
+        i8 y;
     } origem;
 } Jogada;
 Jogada parse_comando(char *cmd);
