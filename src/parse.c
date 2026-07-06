@@ -62,7 +62,7 @@ int parse_captura(Jogada *jog, Token *ult_tkn) {
 }
 
 Jogada parse_comando(char *cmd, Cor cor) {
-    Jogada jogada = {{PEAO, cor}, false, {-1, -1}, {-1, -1}};
+    Jogada jogada = {{PEAO, cor}, false, {-1, -1}, {-1, -1}, NAO_RESOLVIDA};
     Token ult_tkn = TKN_NUL;
 
     int i = 0;

@@ -9,6 +9,7 @@ Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
         if (i == 0) {
             continue;
         }
+
         for (i8 j = -1; j <= 1; j++) {
             if (j == 0) {
                 continue;
@@ -206,7 +207,8 @@ Resolucao resolver_jogada(Peca tab[8][8], Jogada *jog) {
     switch (jog->peca.classe) {
     case PEAO:
         // [TODO]
-        return NENHUMA;
+        return procurar_peao(tab, jog->peca, jog->alvo.x, jog->alvo.y,
+                             &jog->origem.x, &jog->origem.y);
     case CAVALO:
         return procurar_cavalo(tab, jog->peca, jog->alvo.x, jog->alvo.y,
                                &jog->origem.x, &jog->origem.y);

@@ -60,6 +60,11 @@ void iniciar_posicoes_padrao(Tabuleiro *tab) {
 
 void print_tab(Tabuleiro *tab, bool brancas_embaixo) {
     for (int i = 0; i < 8; i++) {
+        if (brancas_embaixo) {
+            printf("%d ", 8 - i);
+        } else {
+            printf("%d ", i + 1);
+        }
         for (int j = 0; j < 8; j++) {
             Peca p;
             if (brancas_embaixo) {
@@ -71,7 +76,7 @@ void print_tab(Tabuleiro *tab, bool brancas_embaixo) {
         }
         printf("\n");
     }
-    printf("\n");
+    printf("  A B C D E F G H\n");
 }
 
 Tabuleiro new_tabuleiro() {

@@ -14,11 +14,11 @@
 
 #define TAM_TABULEIRO 8
 
-typedef enum { ENCONTRADA, NENHUMA, AMBIGUO } Resolucao;
+typedef enum { ENCONTRADA = 'e', NENHUMA = 'n' , AMBIGUO = 'a', NAO_RESOLVIDA = 'i' } Resolucao;
 typedef enum {AVANCO, CAPTURA, ILEGAL} TipoJogada;
 
 typedef enum {
-	VAZIO = '-',
+	VAZIO = '[',
 	PEAO = 'P',
 	BISPO = 'B',
 	CAVALO = 'C',
@@ -30,7 +30,7 @@ typedef enum {
 typedef enum {
 	BRANCA = 'b',
 	PRETA = 'p',
-	INDEFINIDA = '-'
+	INDEFINIDA = ']'
 } Cor;
 
 typedef struct {
@@ -68,6 +68,7 @@ typedef struct {
         i8 x;
         i8 y;
     } origem;
+	Resolucao res;
 } Jogada;
 
 Jogada parse_comando(char *cmd, Cor cor);
