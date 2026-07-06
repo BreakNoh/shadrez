@@ -1,39 +1,27 @@
 #include "xadrez.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
                           i8 *y) {
     u8 contagem = 0;
+    i8 dirs[8][2] = {{1, 2},  {-1, 2},  {2, 1},  {2, -1},
+                     {1, -2}, {-1, -2}, {-2, 1}, {-2, -1}};
 
-    for (i8 i = -1; i <= 1; i++) {
-        if (i == 0) {
+    i8 x_ori = *x, y_ori = *y;
+
+    for (int i = 0; i < 8; i++) {
+        i8 dx = x_ori != -1 ? x_ori : x2 + dirs[i][0];
+        i8 dy = y_ori != -1 ? x_ori : y2 + dirs[i][1];
+
+        if (!esta_dentro(dx, dy)) {
             continue;
         }
 
-        for (i8 j = -1; j <= 1; j++) {
-            if (j == 0) {
-                continue;
-            }
-
-            i8 dx2 = // (D)escolamento horizontal(X)/vertical(Y)
-                     // duplo(2)/unico(1)
-                *x >= 0 ? *x : x2 + j * 2;      // se x ou y já for especificado
-                                                // usar esse valor
-            i8 dy1 = *y >= 0 ? *y : y2 + i;     //
-            i8 dx1 = *x >= 0 ? *x : x2 + j;     //
-            i8 dy2 = *y >= 0 ? *y : y2 + i * 2; //
-
-            if (esta_dentro(dx2, dy1) && sao_mesma_peca(tab[dy1][dx2], peca)) {
-                contagem++;
-                *x = dx2;
-                *y = dy1;
-            }
-
-            if (esta_dentro(dx1, dy2) && sao_mesma_peca(tab[dy2][dx1], peca)) {
-                contagem++;
-                *x = dx1;
-                *y = dy2;
-            }
+        if (sao_mesma_peca(tab[dy][dx], peca)) {
+            contagem++;
+            *x = dx;
+            *y = dy;
         }
     }
 
@@ -206,7 +194,6 @@ i8 procurar_rei(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x1, i8 *y1) {
 Resolucao resolver_jogada(Peca tab[8][8], Jogada *jog) {
     switch (jog->peca.classe) {
     case PEAO:
-        // [TODO]
         return procurar_peao(tab, jog->peca, jog->alvo.x, jog->alvo.y,
                              &jog->origem.x, &jog->origem.y);
     case CAVALO:
