@@ -1,33 +1,6 @@
 #include "xadrez.h"
 #include <stdlib.h>
 
-Peca *raycast(Peca tab[8][8], Movimento mov, u8 *x, u8 *y) {
-    if (!esta_dentro(mov.x2, mov.y2) || !esta_dentro(mov.x1, mov.y1)) {
-        return NULL;
-    }
-
-    i8 passo_x = sign(mov.x2 - mov.x1);
-    i8 passo_y = sign(mov.y2 - mov.y1);
-
-    *x = mov.x1 + passo_x;
-    *y = mov.y1 + passo_y;
-
-    while (*x != mov.x2 || *y != mov.y2) {
-        if (tab[*y][*x].classe != VAZIO) {
-            return &tab[*y][*x];
-        }
-
-        if (*x != mov.x2) {
-            *x += passo_x;
-        }
-        if (*y != mov.y2) {
-            *y += passo_y;
-        }
-    }
-
-    return &tab[*y][*x];
-}
-
 typedef enum { LIVRE, ATAQUE, BLOQUEADO, FORA_TABULEIRO } Colisao;
 Colisao checar_colisao(Peca tab[8][8], Movimento mov) {
     u8 x, y;
@@ -162,4 +135,23 @@ bool validar_rei(Peca tab[8][8], Movimento mov) {
     }
 
     return abs(dx) <= 1 && abs(dy) <= 1;
+}
+
+bool validar_movimento(Peca tab[8][8], Movimento mov) {
+    switch (tab[mov.y1][mov.x1].classe) {
+    case BISPO:
+        return validar_bispo(tab, mov);
+    case CAVALO:
+        return validar_cavalo(tab, mov);
+    case TORRE:
+        return validar_torre(tab, mov);
+    case PEAO:
+        return validar_peao(tab, mov);
+    case REI:
+        return validar_rei(tab, mov);
+    case RAINHA:
+        return validar_rainha(tab, mov);
+    default:
+        return false;
+    }
 }

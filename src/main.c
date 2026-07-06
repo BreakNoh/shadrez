@@ -10,15 +10,16 @@ void print_jogada(Jogada *j) {
 int main(int argc, char *argv[]) {
     Jogada jog;
     Tabuleiro tab = new_tabuleiro();
+
     print_tab(&tab, true);
 
     jog = parse_comando("Cc3", BRANCA);
 
-    print_jogada(&jog);
     Resolucao r = resolver_jogada(tab.posicoes, &jog);
 
-    printf("%c", r);
-    print_jogada(&jog);
+    printf("%d", validar_movimento(tab.posicoes,
+                                   (Movimento){jog.origem.x, jog.origem.y,
+                                               jog.alvo.x, jog.alvo.y}));
 
     return 0;
 }

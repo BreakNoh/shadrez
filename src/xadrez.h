@@ -55,7 +55,7 @@ bool esta_dentro(i8 x, i8 y);
 bool sao_mesma_peca(Peca a, Peca b);
 
 Peca *raycast(Peca tab[8][8], Movimento mov, u8 *x, u8 *y);
-bool validar_movimento(i8 tab[8][8], Movimento mov);
+bool validar_movimento(Peca tab[8][8], Movimento mov);
 
 typedef struct {
     Peca peca;
