@@ -1,4 +1,5 @@
 #include "xadrez.h"
+#include <stdlib.h>
 
 Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
                           i8 *y) {
@@ -127,56 +128,48 @@ Resolucao procurar_rainha(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
     return procurar_peca_raio(tab, peca, x2, y2, x, y, dirs, 8);
 }
 
-// Resolucao procurar_peao(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x, i8
-// *y,
-//                         Jogada jogada) {
-//     u8 contagem = 0;
-//     i8 cor = peca.cor;
-//
-//     if (jogada == AVANCO) {
-//     }
-//     if (jogada == EN_PASSANT) {
-//     }
-//     if (jogada == CAPTURA) {
-//     }
-//
-//     if (captura) {
-//         for (i8 i = -1; i <= 1; i++) {
-//             if (i == 0) {
-//                 continue;
-//             }
-//
-//             if (tab[y2 - cor][x2 + i] == peca) {
-//                 contagem++;
-//                 *x = x2 + i;
-//                 *y = y2 - cor;
-//             }
-//         }
-//     } else {
-//         for (i8 i = 1; i <= 2; i++) {
-//             i8 visitada = tab[y2 - (i * cor)][x2];
-//             if (visitada == peca) {
-//                 contagem++;
-//                 *x = x2;
-//                 *y = y2 - (i * cor);
-//             } else if (visitada != 0) {
-//                 break;
-//             }
-//         }
-//     }
-//     switch (contagem) {
-//     case 0:
-//         *x = -1;
-//         *y = -1;
-//         return NENHUMA;
-//     case 1:
-//         return ENCONTRADA;
-//     default:
-//         *x = -1;
-//         *y = -1;
-//         return AMBIGUO;
-//     }
-// }
+Resolucao procurar_peao(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x, i8 *y) {
+    u8 contagem = 0;
+    i8 cor = peca.cor == BRANCA ? 1 : -1;
+
+    i8 x_ori = *x;
+    bool capturando = x_ori != -1; // x_inicial especificado axb
+
+    if (capturando) {
+        if (sao_mesma_peca(tab[y2 - cor][x_ori], peca)) {
+            contagem++;
+            *x = x_ori;
+            *y = y2 - cor;
+        }
+    } else {
+        u8 x_col = -1, y_col = -1;
+        Movimento mov = (Movimento){x2, y2, x2, y2 - (cor * 2)};
+        Peca *colisao = raycast(tab, mov, &x_col, &y_col);
+
+        if (colisao == NULL) {
+            return NENHUMA;
+        }
+
+        if (sao_mesma_peca(*colisao, peca)) {
+            contagem++;
+            *x = x_col;
+            *y = y_col;
+        }
+    }
+
+    switch (contagem) {
+    case 0:
+        *x = -1;
+        *y = -1;
+        return NENHUMA;
+    case 1:
+        return ENCONTRADA;
+    default:
+        *x = -1;
+        *y = -1;
+        return AMBIGUO;
+    }
+}
 
 i8 procurar_rei(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x1, i8 *y1) {
     u8 contagem = 0;

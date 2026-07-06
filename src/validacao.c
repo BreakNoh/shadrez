@@ -2,15 +2,15 @@
 #include <stdlib.h>
 
 Peca *raycast(Peca tab[8][8], Movimento mov, u8 *x, u8 *y) {
+    if (!esta_dentro(mov.x2, mov.y2) || !esta_dentro(mov.x1, mov.y1)) {
+        return NULL;
+    }
+
     i8 passo_x = sign(mov.x2 - mov.x1);
     i8 passo_y = sign(mov.y2 - mov.y1);
 
     *x = mov.x1 + passo_x;
     *y = mov.y1 + passo_y;
-
-    if (!esta_dentro(mov.x2, mov.y2) || !esta_dentro(mov.x1, mov.y1)) {
-        return NULL;
-    }
 
     while (*x != mov.x2 || *y != mov.y2) {
         if (tab[*y][*x].classe != VAZIO) {
