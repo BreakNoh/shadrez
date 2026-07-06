@@ -9,6 +9,13 @@ void print_jogada(Jogada *j) {
 
 int main(int argc, char *argv[]) {
     Jogada jog;
+    Tabuleiro tab = new_tabuleiro();
+
+    print_tab(&tab, true);
+
+    mover_peca(&tab, 0, 1, 0, 3);
+
+    print_tab(&tab, true);
 
     if (argc > 1) {
         jog = parse_comando(argv[1], PRETA);
