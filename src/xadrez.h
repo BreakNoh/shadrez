@@ -74,7 +74,7 @@ typedef struct {
 Jogada parse_comando(char *cmd, Cor cor);
 Resolucao resolver_jogada(Peca tab[8][8], Jogada *jog);
 
-Tabuleiro new_tabuleiro();
+Tabuleiro new_tabuleiro(char leiaute[8][8]);
 void print_tab(Tabuleiro *tab, bool brancas_embaixo);
 void mover_peca(Tabuleiro *tab, i8 x1, i8 y1, i8 x2, i8 y2);
 

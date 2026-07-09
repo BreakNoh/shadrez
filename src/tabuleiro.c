@@ -2,7 +2,41 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#define TO_LOWER(ch) (ch - ('A' - 'a'))
+
 static Peca PECA_VAZIA = {VAZIO, INDEFINIDA};
+
+Peca parse_peca_leiaute(char ch) {
+    if (ch < 'a' && ch > 'z' && ch < 'A' && ch > 'Z') {
+        return PECA_VAZIA;
+    }
+
+    bool maiscula = ch >= 'A' && ch <= 'Z';
+    Cor cor = maiscula ? BRANCA : PRETA;
+
+    switch (ch) {
+    case 'c':
+    case 'C':
+        return (Peca){CAVALO, cor};
+    case 'b':
+    case 'B':
+        return (Peca){BISPO, cor};
+    case 't':
+    case 'T':
+        return (Peca){TORRE, cor};
+    case 'p':
+    case 'P':
+        return (Peca){PEAO, cor};
+    case 'd':
+    case 'D':
+        return (Peca){RAINHA, cor};
+    case 'r':
+    case 'R':
+        return (Peca){REI, cor};
+    default:
+        return PECA_VAZIA;
+    }
+}
 
 void avancar_turno(Tabuleiro *tab) { tab->turno++; }
 
@@ -48,6 +82,24 @@ void iniciar_posicoes(Tabuleiro *tab) {
     }
 }
 
+static char LEIAUTE_PADRAO[8][8] = {"TCBDRBCT", "PPPPPPPP", "-",       "-", "-",
+                                    "-",        "pppppppp", "tcbdrbct"};
+
+void carregar_leiaute(Tabuleiro *tab, char leiaute[8][8]) {
+    for (int i = 0; i < 8; i++) {
+        if (leiaute[i][0] == '-') {
+            for (int j = 0; j < 8; j++) {
+                set_pos(tab, j, i, PECA_VAZIA);
+            }
+            continue;
+        }
+
+        for (int j = 0; j < 8; j++) {
+            set_pos(tab, j, i, parse_peca_leiaute(leiaute[i][j]));
+        }
+    }
+}
+
 void iniciar_posicoes_padrao(Tabuleiro *tab) {
     iniciar_posicoes(tab);
     for (int i = 0; i < 8; i++) {
@@ -79,8 +131,12 @@ void print_tab(Tabuleiro *tab, bool brancas_embaixo) {
     printf("  A B C D E F G H\n");
 }
 
-Tabuleiro new_tabuleiro() {
+Tabuleiro new_tabuleiro(char leiaute[8][8]) {
     Tabuleiro tab = {{}, 0, BRANCA};
-    iniciar_posicoes_padrao(&tab);
+    if (leiaute == NULL) {
+        carregar_leiaute(&tab, LEIAUTE_PADRAO);
+    } else {
+        carregar_leiaute(&tab, leiaute);
+    }
     return tab;
 }

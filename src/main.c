@@ -9,7 +9,7 @@ void print_jogada(Jogada *j) {
 
 int main(int argc, char *argv[]) {
     Jogada jog;
-    Tabuleiro tab = new_tabuleiro();
+    Tabuleiro tab = new_tabuleiro(NULL);
 
     print_tab(&tab, true);
 
