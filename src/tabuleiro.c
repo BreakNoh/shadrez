@@ -82,9 +82,6 @@ void iniciar_posicoes(Tabuleiro *tab) {
     }
 }
 
-static char LEIAUTE_PADRAO[8][8] = {"TCBDRBCT", "PPPPPPPP", "-",       "-", "-",
-                                    "-",        "pppppppp", "tcbdrbct"};
-
 void carregar_leiaute(Tabuleiro *tab, char leiaute[8][8]) {
     for (int i = 0; i < 8; i++) {
         if (leiaute[i][0] == '-') {
