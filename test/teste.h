@@ -2,6 +2,7 @@
 #define TESTE_H
 
 #include "../src/xadrez.h"
+#include <assert.h>
 
 
 
