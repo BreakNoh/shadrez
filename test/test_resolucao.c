@@ -11,65 +11,87 @@
 8 . . . . . . . .
 */
 
-static char MOCK_AMBUIGUIDADE[8][8] = {
+static char MOCK_AMBUIGUIDADE[9][9] = {
     "..C.....", "B.B.....", ".*T.....", "BT......",
     "C...D.D.", "........", "....D.*.", "........",
 }; // posicoes concorridas: b3 e g7
 
-INICIAR_TESTE(cavalo_ambiguo)
+TESTE(cavalo_ambiguo) {
+  Tabuleiro tab = new_tabuleiro(MOCK_AMBUIGUIDADE);
 
-Tabuleiro tab = new_tabuleiro(MOCK_AMBUIGUIDADE);
-
-struct {
-  char *comando;
   struct {
-    i8 x;
-    i8 y;
-  } origem;
-  Resolucao resultado_esperado;
-} testes[] = {
-    {"Cb3", {-1, -1}, AMBIGUO},
-    {"Cab3", {0, -1}, ENCONTRADA},
-    {"Ccb3", {2, -1}, ENCONTRADA},
-};
+    char *comando;
+    struct {
+      i8 x;
+      i8 y;
+    } origem;
+    Resolucao resultado_esperado;
+  } testes[] = {
+      {"Cb3", {-1, -1}, AMBIGUO},
+      {"Cab3", {0, -1}, ENCONTRADA},
+      {"Ccb3", {2, -1}, ENCONTRADA},
+  };
 
-for (int i = 0; i < 3; i++) {
-  Jogada jog = parse_comando(testes[i].comando, BRANCA);
+  for (int i = 0; i < 3; i++) {
+    Jogada jog = parse_comando(testes[i].comando, BRANCA);
 
-  ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
+    ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
 
-  Resolucao resolucao = resolver_jogada(tab.posicoes, &jog);
+    Resolucao resolucao = resolver_jogada(tab.posicoes, &jog);
 
-  ASSERT_EQ(testes[i].resultado_esperado, resolucao, c);
+    ASSERT_EQ(testes[i].resultado_esperado, resolucao, c);
+  }
 }
 
-FINALIZAR_TESTE
+TESTE(bispo_ambiguo) {
 
-INICIAR_TESTE(bispo_ambiguo)
+  Tabuleiro tab = new_tabuleiro(MOCK_AMBUIGUIDADE);
 
-Tabuleiro tab = new_tabuleiro(MOCK_AMBUIGUIDADE);
-
-struct {
-  char *comando;
   struct {
-    i8 x;
-    i8 y;
-  } origem;
-  Resolucao resultado_esperado;
-} testes[] = {
-    {"Bb3", {-1, -1}, AMBIGUO},    {"Bcb3", {2, -1}, ENCONTRADA},
-    {"Bab3", {0, -1}, AMBIGUO},    {"Bc2b3", {2, 1}, ENCONTRADA},
-    {"Ba4b3", {0, 3}, ENCONTRADA}, {"Ba2b3", {0, 1}, ENCONTRADA},
-};
+    char *comando;
+    struct {
+      i8 x;
+      i8 y;
+    } origem;
+    Resolucao resultado_esperado;
+  } testes[] = {
+      {"Bb3", {-1, -1}, AMBIGUO},    {"Bcb3", {2, -1}, ENCONTRADA},
+      {"Bab3", {0, -1}, AMBIGUO},    {"Bc2b3", {2, 1}, ENCONTRADA},
+      {"Ba4b3", {0, 3}, ENCONTRADA}, {"Ba2b3", {0, 1}, ENCONTRADA},
+  };
 
-for (int i = 0; i < 6; i++) {
-  Jogada jog = parse_comando(testes[i].comando, BRANCA);
+  for (int i = 0; i < 6; i++) {
+    Jogada jog = parse_comando(testes[i].comando, BRANCA);
 
-  ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
+    ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
 
-  Resolucao resolucao = resolver_jogada(tab.posicoes, &jog);
+    Resolucao resolucao = resolver_jogada(tab.posicoes, &jog);
 
-  ASSERT_EQ(testes[i].resultado_esperado, resolucao, c);
+    ASSERT_EQ(testes[i].resultado_esperado, resolucao, c);
+  }
 }
 
-FINALIZAR_TESTE
+TESTE(torre_ambiguo) {
+  Tabuleiro tab = new_tabuleiro(MOCK_AMBUIGUIDADE);
+
+  struct {
+    char *comando;
+    struct {
+      i8 x;
+      i8 y;
+    } origem;
+    Resolucao resultado_esperado;
+  } testes[] = {{"Tb3", {-1, -1}, AMBIGUO},
+                {"Tbb3", {1, -1}, ENCONTRADA},
+                {"Tcb3", {2, -1}, ENCONTRADA}};
+
+  for (int i = 0; i < 3; i++) {
+    Jogada jog = parse_comando(testes[i].comando, BRANCA);
+
+    ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
+
+    Resolucao resolucao = resolver_jogada(tab.posicoes, &jog);
+
+    ASSERT_EQ(testes[i].resultado_esperado, resolucao, c);
+  }
+}
