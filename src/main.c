@@ -4,11 +4,11 @@
 int main(int argc, char *argv[]) {
   Tabuleiro tab = new_tabuleiro(NULL);
 
-  char comando[16] = {0};
+  char comando[11] = {0};
 
   while (true) {
     print_tab(&tab, true);
-    scanf("%s", comando);
+    scanf("%10s", comando);
 
     Jogada jog = parse_comando(comando, tab.jogador, NULL);
     Resolucao res = resolver_jogada(tab.posicoes, &jog);
