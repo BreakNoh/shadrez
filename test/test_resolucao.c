@@ -4,7 +4,7 @@
   A B C D E F G H
 1 . . C . . . . .
 2 B . B . . . . .
-3 . * T . . . . .
+3 T * T . . . . .
 4 B T . . . . . .
 5 C . . . D . D .
 6 . . . . . . . .
@@ -13,7 +13,7 @@
 */
 
 static char MOCK_AMBUIGUIDADE[9][9] = {
-    "..C.....", "B.B.....", ".*T.....", "BT......",
+    "..C.....", "B.B.....", "T*T.....", "BT......",
     "C...D.D.", "........", "....D.*.", "........",
 }; // posicoes concorridas: b3 e g7
 
@@ -84,11 +84,12 @@ TESTE(bispo_ambiguo) {
     Resolucao resultado_esperado;
   } testes[] = {
       {"Bb3", {-1, -1}, AMBIGUO},    {"Bcb3", {2, -1}, ENCONTRADA},
-      {"Bab3", {0, -1}, AMBIGUO},    {"Bc2b3", {2, 1}, ENCONTRADA},
-      {"Ba4b3", {0, 3}, ENCONTRADA}, {"Ba2b3", {0, 1}, ENCONTRADA},
+      {"Bab3", {0, -1}, AMBIGUO},    {"B2b3", {-1, 1}, AMBIGUO},
+      {"Bc2b3", {2, 1}, ENCONTRADA}, {"Ba4b3", {0, 3}, ENCONTRADA},
+      {"Ba2b3", {0, 1}, ENCONTRADA},
   };
 
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 7; i++) {
     Jogada jog = parse_comando(testes[i].comando, BRANCA);
 
     ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
@@ -110,10 +111,11 @@ TESTE(torre_ambigua) {
     } origem;
     Resolucao resultado_esperado;
   } testes[] = {{"Tb3", {-1, -1}, AMBIGUO},
+                {"T3b3", {-1, 2}, AMBIGUO},
                 {"Tbb3", {1, -1}, ENCONTRADA},
                 {"Tcb3", {2, -1}, ENCONTRADA}};
 
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     Jogada jog = parse_comando(testes[i].comando, BRANCA);
 
     ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
