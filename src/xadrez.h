@@ -71,7 +71,7 @@ typedef struct {
   Resolucao res;
 } Jogada;
 
-Jogada parse_comando(char *cmd, Cor cor);
+Jogada parse_comando(char *cmd, Cor cor, bool *sucesso);
 Resolucao resolver_jogada(Peca tab[8][8], Jogada *jog);
 
 Tabuleiro new_tabuleiro(char leiaute[9][9]);

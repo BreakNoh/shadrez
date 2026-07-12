@@ -34,7 +34,7 @@ TESTE(dama_ambigua) {
   };
 
   for (int i = 0; i < 6; i++) {
-    Jogada jog = parse_comando(testes[i].comando, BRANCA);
+    Jogada jog = parse_comando(testes[i].comando, BRANCA, NULL);
 
     ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
 
@@ -61,7 +61,7 @@ TESTE(cavalo_ambiguo) {
   };
 
   for (int i = 0; i < 3; i++) {
-    Jogada jog = parse_comando(testes[i].comando, BRANCA);
+    Jogada jog = parse_comando(testes[i].comando, BRANCA, NULL);
 
     ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
 
@@ -90,7 +90,7 @@ TESTE(bispo_ambiguo) {
   };
 
   for (int i = 0; i < 7; i++) {
-    Jogada jog = parse_comando(testes[i].comando, BRANCA);
+    Jogada jog = parse_comando(testes[i].comando, BRANCA, NULL);
 
     ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
 
@@ -116,7 +116,7 @@ TESTE(torre_ambigua) {
                 {"Tcb3", {2, -1}, ENCONTRADA}};
 
   for (int i = 0; i < 4; i++) {
-    Jogada jog = parse_comando(testes[i].comando, BRANCA);
+    Jogada jog = parse_comando(testes[i].comando, BRANCA, NULL);
 
     ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
 

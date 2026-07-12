@@ -1,4 +1,5 @@
 #include "teste.h"
+#include <stdbool.h>
 
 typedef struct {
   char *comando;
@@ -131,8 +132,10 @@ TESTE(parse_comando_sem_captura) {
 
   for (int i = 0; i < total_testes; i++) {
     TesteParse teste = testes[i];
-    Jogada j = parse_comando(teste.comando, teste.cor_usada);
+    bool sucesso = false;
+    Jogada j = parse_comando(teste.comando, teste.cor_usada, &sucesso);
 
+    ASSERT_EQ(sucesso, true, d);
     ASSERT_EQ(j.peca.classe, teste.espeardo.peca.classe, c);
     ASSERT_EQ(j.peca.cor, teste.espeardo.peca.cor, c);
     ASSERT_EQ(j.alvo.x, teste.espeardo.alvo.x, d);
@@ -266,8 +269,10 @@ TESTE(parse_comando_com_captura) {
 
   for (int i = 0; i < total_testes; i++) {
     TesteParse teste = testes[i];
-    Jogada j = parse_comando(teste.comando, teste.cor_usada);
+    bool sucesso = false;
+    Jogada j = parse_comando(teste.comando, teste.cor_usada, &sucesso);
 
+    ASSERT_EQ(sucesso, true, d);
     ASSERT_EQ(j.peca.classe, teste.espeardo.peca.classe, c);
     ASSERT_EQ(j.peca.cor, teste.espeardo.peca.cor, c);
     ASSERT_EQ(j.captura, teste.espeardo.captura, d);

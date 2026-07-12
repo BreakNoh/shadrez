@@ -1,5 +1,5 @@
 build:
-	gcc ./src/*.c -o ./bin/main -lncurses
+	gcc ./src/*.c -o ./bin/main 
 
 run: build
 	./bin/main $(ARGS)

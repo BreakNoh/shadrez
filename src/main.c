@@ -1,25 +1,18 @@
 #include "xadrez.h"
 #include <stdio.h>
 
-void print_jogada(Jogada *j) {
-    printf("{\np:%c %c, cap: %d, x1: %d, y1: %d, x2: %d, y2: %d\n}",
-           j->peca.classe, j->peca.cor, j->captura, j->origem.x + 1,
-           1 + j->origem.y, j->alvo.x + 1, 1 + j->alvo.y);
-}
-
 int main(int argc, char *argv[]) {
-    Jogada jog;
-    Tabuleiro tab = new_tabuleiro(NULL);
+  Jogada jog;
+  Tabuleiro tab = new_tabuleiro(NULL);
 
+  char comando[16] = {0};
+
+  while (true) {
     print_tab(&tab, true);
+    scanf("%s", comando);
 
-    jog = parse_comando("Cc3", BRANCA);
+    printf("%s\n", comando);
+  }
 
-    Resolucao r = resolver_jogada(tab.posicoes, &jog);
-
-    printf("%d", validar_movimento(tab.posicoes,
-                                   (Movimento){jog.origem.x, jog.origem.y,
-                                               jog.alvo.x, jog.alvo.y}));
-
-    return 0;
+  return 0;
 }
