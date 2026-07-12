@@ -1,10 +1,13 @@
 #include "xadrez.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
                           i8 *y) {
   u8 contagem = 0;
+  bool encontrados[8][8] = {0};
+
   i8 dirs[8][2] = {{1, 2},  {-1, 2},  {2, 1},  {2, -1},
                    {1, -2}, {-1, -2}, {-2, 1}, {-2, -1}};
 
@@ -19,12 +22,12 @@ Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
     }
 
     if (sao_mesma_peca(tab[dy][dx], peca)) {
-      printf("\n[debug cavalo] x: %d y: %d\ndirx: %d diry: %d\n", dx, dy,
-             dirs[i][0], dirs[i][1]);
-
-      contagem++;
-      *x = dx;
-      *y = dy;
+      if (!encontrados[dy][dx]) {
+        encontrados[dy][dx] = true;
+        contagem++;
+        *x = dx;
+        *y = dy;
+      }
     }
   }
 
