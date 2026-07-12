@@ -45,7 +45,7 @@ bool validar_peao(Peca tab[8][8], Movimento mov) {
     return false;
   }
 
-  return false;
+  return true;
 } // [TODO]
 
 bool validar_bispo(Peca tab[8][8], Movimento mov) {
