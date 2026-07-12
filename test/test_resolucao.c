@@ -1,4 +1,15 @@
 #include "teste.h"
+/*
+  A B C D E F G H
+1 . . C . . . . .
+2 B . B . . . . .
+3 . * T . . . . .
+4 B T . . . . . .
+5 C . . . D . D .
+6 . . . . . . . .
+7 . . . . D . * .
+8 . . . . . . . .
+*/
 
 static char MOCK_AMBUIGUIDADE[8][8] = {
     "..C.....", "B.B.....", ".*T.....", "BT......",
@@ -23,6 +34,35 @@ struct {
 };
 
 for (int i = 0; i < 3; i++) {
+  Jogada jog = parse_comando(testes[i].comando, BRANCA);
+
+  ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
+
+  Resolucao resolucao = resolver_jogada(tab.posicoes, &jog);
+
+  ASSERT_EQ(testes[i].resultado_esperado, resolucao, c);
+}
+
+FINALIZAR_TESTE
+
+INICIAR_TESTE(bispo_ambiguo)
+
+Tabuleiro tab = new_tabuleiro(MOCK_AMBUIGUIDADE);
+
+struct {
+  char *comando;
+  struct {
+    i8 x;
+    i8 y;
+  } origem;
+  Resolucao resultado_esperado;
+} testes[] = {
+    {"Bb3", {-1, -1}, AMBIGUO},    {"Bcb3", {2, -1}, ENCONTRADA},
+    {"Bab3", {0, -1}, AMBIGUO},    {"Bc2b3", {2, 1}, ENCONTRADA},
+    {"Ba4b3", {0, 3}, ENCONTRADA}, {"Ba2b3", {0, 1}, ENCONTRADA},
+};
+
+for (int i = 0; i < 6; i++) {
   Jogada jog = parse_comando(testes[i].comando, BRANCA);
 
   ASSERT_EQ(jog.origem.x, testes[i].origem.x, d)
