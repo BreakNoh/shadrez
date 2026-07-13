@@ -49,6 +49,10 @@ typedef struct {
   Peca posicoes[TAM_TABULEIRO][TAM_TABULEIRO];
   uint32_t turno;
   Cor jogador;
+	bool em_check;
+	bool reis_iniciados[2];
+	bool torres_iniciadas[2][2];
+	Movimento ultimo_movimento;
 } Tabuleiro;
 
 bool esta_dentro(i8 x, i8 y);
