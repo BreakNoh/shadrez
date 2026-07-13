@@ -1,5 +1,6 @@
 #include "xadrez.h"
 #include <stdio.h>
+#include <string.h>
 
 int main(int argc, char *argv[]) {
   Tabuleiro tab = new_tabuleiro(NULL);
@@ -9,6 +10,10 @@ int main(int argc, char *argv[]) {
   while (true) {
     print_tab(&tab, true);
     scanf("%10s", comando);
+
+    if (strcmp(comando, "exit") == 0) {
+      return 0;
+    }
 
     Jogada jog = parse_comando(comando, tab.jogador, NULL);
     Resolucao res = resolver_jogada(tab.posicoes, &jog);
