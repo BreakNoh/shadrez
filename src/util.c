@@ -3,10 +3,9 @@
 bool esta_dentro(i8 x, i8 y) {
     return x >= 0 && x < TAM_TABULEIRO && y >= 0 && y < TAM_TABULEIRO;
 }
-bool sao_mesma_peca(Peca a, Peca b) {
-    return a.classe == b.classe && a.cor == b.cor;
-}
-Peca *raycast(Peca tab[8][8], Movimento mov, u8 *x, u8 *y) {
+
+Peca *raycast(Peca tab[TAM_TABULEIRO][TAM_TABULEIRO], Movimento mov, u8 *x,
+              u8 *y) {
     if (!esta_dentro(mov.x2, mov.y2) || !esta_dentro(mov.x1, mov.y1)) {
         return NULL;
     }

@@ -1,9 +1,6 @@
 #include "xadrez.h"
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
+Resolucao procurar_cavalo(Tabuleiro *tab, Peca peca, i8 x2, i8 y2, i8 *x,
                           i8 *y) {
     u8 contagem = 0;
     bool encontrados[8][8] = {0};
@@ -21,7 +18,7 @@ Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
             continue;
         }
 
-        if (sao_mesma_peca(tab[dy][dx], peca)) {
+        if (cmp_pos(tab, dx, dy, peca)) {
             if (!encontrados[dy][dx]) {
                 encontrados[dy][dx] = true;
                 contagem++;
@@ -45,7 +42,7 @@ Resolucao procurar_cavalo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
     }
 }
 
-Resolucao procurar_peca_raio(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
+Resolucao procurar_peca_raio(Tabuleiro *tab, Peca peca, i8 x2, i8 y2, i8 *x,
                              i8 *y, i8 (*dirs)[2], u8 dirs_len) {
     u8 contagem = 0;
 
@@ -77,7 +74,7 @@ Resolucao procurar_peca_raio(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
         Movimento mov = {x2, y2, x2 + px * dist_max, y2 + py * dist_max};
 
         u8 x_col, y_col;
-        Peca *colisao = raycast(tab, mov, &x_col, &y_col);
+        Peca *colisao = raycast(tab->posicoes, mov, &x_col, &y_col);
 
         if (colisao == NULL) {
             continue;
@@ -106,24 +103,24 @@ Resolucao procurar_peca_raio(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
     return (contagem == 0) ? NENHUMA : AMBIGUO;
 }
 
-Resolucao procurar_torre(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
+Resolucao procurar_torre(Tabuleiro *tab, Peca peca, i8 x2, i8 y2, i8 *x,
                          i8 *y) {
     i8 dirs[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
     return procurar_peca_raio(tab, peca, x2, y2, x, y, dirs, 4);
 }
-Resolucao procurar_bispo(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
+Resolucao procurar_bispo(Tabuleiro *tab, Peca peca, i8 x2, i8 y2, i8 *x,
                          i8 *y) {
     i8 dirs[4][2] = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
     return procurar_peca_raio(tab, peca, x2, y2, x, y, dirs, 4);
 }
-Resolucao procurar_rainha(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x,
+Resolucao procurar_rainha(Tabuleiro *tab, Peca peca, i8 x2, i8 y2, i8 *x,
                           i8 *y) {
     i8 dirs[8][2] = {{1, 0}, {0, 1},  {-1, 0}, {0, -1},
                      {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
     return procurar_peca_raio(tab, peca, x2, y2, x, y, dirs, 8);
 }
 
-Resolucao procurar_peao(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x, i8 *y) {
+Resolucao procurar_peao(Tabuleiro *tab, Peca peca, i8 x2, i8 y2, i8 *x, i8 *y) {
     u8 contagem = 0;
     i8 cor = peca.cor == BRANCA ? 1 : -1;
 
@@ -131,7 +128,7 @@ Resolucao procurar_peao(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x, i8 *y) {
     bool capturando = x_ori != -1; // x_inicial especificado axb
 
     if (capturando) {
-        if (sao_mesma_peca(tab[y2 - cor][x_ori], peca)) {
+        if (cmp_pos(tab, x_ori, y2 - cor, peca)) {
             contagem++;
             *x = x_ori;
             *y = y2 - cor;
@@ -139,13 +136,13 @@ Resolucao procurar_peao(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x, i8 *y) {
     } else {
         u8 x_col = -1, y_col = -1;
         Movimento mov = (Movimento){x2, y2, x2, y2 - (cor * 2)};
-        Peca *colisao = raycast(tab, mov, &x_col, &y_col);
+        Peca *colisao = raycast(tab->posicoes, mov, &x_col, &y_col);
 
         if (colisao == NULL) {
             return NENHUMA;
         }
 
-        if (sao_mesma_peca(*colisao, peca)) {
+        if (cmp_peca(*colisao, peca)) {
             contagem++;
             *x = x_col;
             *y = y_col;
@@ -166,7 +163,7 @@ Resolucao procurar_peao(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x, i8 *y) {
     }
 }
 
-i8 procurar_rei(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x1, i8 *y1) {
+i8 procurar_rei(Tabuleiro *tab, Peca peca, i8 x2, i8 y2, i8 *x1, i8 *y1) {
     u8 contagem = 0;
 
     for (i8 i = -1; i <= 1; i++) {
@@ -175,7 +172,7 @@ i8 procurar_rei(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x1, i8 *y1) {
                 continue;
             }
 
-            if (sao_mesma_peca(tab[y2 + i][x2 + j], peca)) {
+            if (cmp_pos(tab, x2 + j, y2 + i, peca)) {
                 contagem++;
                 *x1 = x2 + j;
                 *y1 = y2 + i;
@@ -197,27 +194,38 @@ i8 procurar_rei(Peca tab[8][8], Peca peca, i8 x2, i8 y2, i8 *x1, i8 *y1) {
     }
 }
 
-Resolucao resolver_jogada(Peca tab[8][8], Jogada *jog) {
+Resolucao resolver_jogada(Tabuleiro *tab, Jogada *jog) {
+    Resolucao res = NENHUMA;
+
     switch (jog->peca.classe) {
     case PEAO:
-        return procurar_peao(tab, jog->peca, jog->alvo.x, jog->alvo.y,
-                             &jog->origem.x, &jog->origem.y);
+        res = procurar_peao(tab, jog->peca, jog->mov.x2, jog->mov.y2,
+                            &jog->mov.x1, &jog->mov.y1);
+        break;
     case CAVALO:
-        return procurar_cavalo(tab, jog->peca, jog->alvo.x, jog->alvo.y,
-                               &jog->origem.x, &jog->origem.y);
+        res = procurar_cavalo(tab, jog->peca, jog->mov.x2, jog->mov.y2,
+                              &jog->mov.x1, &jog->mov.y1);
+        break;
     case BISPO:
-        return procurar_bispo(tab, jog->peca, jog->alvo.x, jog->alvo.y,
-                              &jog->origem.x, &jog->origem.y);
+        res = procurar_bispo(tab, jog->peca, jog->mov.x2, jog->mov.y2,
+                             &jog->mov.x1, &jog->mov.y1);
+        break;
     case TORRE:
-        return procurar_torre(tab, jog->peca, jog->alvo.x, jog->alvo.y,
-                              &jog->origem.x, &jog->origem.y);
+        res = procurar_torre(tab, jog->peca, jog->mov.x2, jog->mov.y2,
+                             &jog->mov.x1, &jog->mov.y1);
+        break;
     case RAINHA:
-        return procurar_rainha(tab, jog->peca, jog->alvo.x, jog->alvo.y,
-                               &jog->origem.x, &jog->origem.y);
+        res = procurar_rainha(tab, jog->peca, jog->mov.x2, jog->mov.y2,
+                              &jog->mov.x1, &jog->mov.y1);
+        break;
     case REI:
-        return procurar_rei(tab, jog->peca, jog->alvo.x, jog->alvo.y,
-                            &jog->origem.x, &jog->origem.y);
+        res = procurar_rei(tab, jog->peca, jog->mov.x2, jog->mov.y2,
+                           &jog->mov.x1, &jog->mov.y1);
+        break;
     default:
-        return NENHUMA;
+        break;
     }
+
+    jog->res = res;
+    return res;
 }

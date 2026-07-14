@@ -25,9 +25,8 @@ Colisao checar_colisao(Peca tab[8][8], Movimento mov) {
     return BLOQUEADO; // bloqueado por inimigo
 }
 
-bool validar_peao(Peca tab[8][8], Movimento mov) {
-    Peca peca = tab[mov.y1][mov.x1];
-    if (peca.classe != PEAO) {
+bool validar_peao(Tabuleiro *tab, Movimento mov, Peca peca) {
+    if (cmp_pos(tab, mov.x1, mov.y1, peca)) {
         return false;
     }
 
@@ -60,7 +59,7 @@ bool validar_peao(Peca tab[8][8], Movimento mov) {
         return false;
     }
 
-    Cor cor_alvo = tab[mov.y2][mov.x2].cor;
+    Cor cor_alvo = get_pos(tab, mov.x2, mov.y2)->cor;
 
     if (dx != 0 && (cor_alvo == INDEFINIDA || cor_alvo == peca.cor)) {
         // movimento diagonal num espaço amigo ou livre
@@ -71,11 +70,10 @@ bool validar_peao(Peca tab[8][8], Movimento mov) {
     return true;
 } // [TODO]
 
-bool validar_bispo(Peca tab[8][8], Movimento mov) {
-    if (tab[mov.y1][mov.x1].classe != BISPO) {
+bool validar_bispo(Tabuleiro *tab, Movimento mov, Peca peca) {
+    if (cmp_pos(tab, mov.x1, mov.y1, peca)) {
         return false;
     }
-
     i8 dx = mov.x2 - mov.x1;
     i8 dy = mov.y2 - mov.y1;
 
@@ -86,8 +84,8 @@ bool validar_bispo(Peca tab[8][8], Movimento mov) {
         return false;
     } // movimento não diagonal ou não sai do lugar
 
-    if ((checar_colisao(tab, mov) != LIVRE) &&
-        (checar_colisao(tab, mov) != ATAQUE)) {
+    if ((checar_colisao(tab->posicoes, mov) != LIVRE) &&
+        (checar_colisao(tab->posicoes, mov) != ATAQUE)) {
         // movimento bloqueado ou fora do tabuleiro
         return false;
     }
@@ -95,11 +93,10 @@ bool validar_bispo(Peca tab[8][8], Movimento mov) {
     return true;
 }
 
-bool validar_torre(Peca tab[8][8], Movimento mov) {
-    if (tab[mov.y1][mov.x1].classe != TORRE) {
+bool validar_torre(Tabuleiro *tab, Movimento mov, Peca peca) {
+    if (cmp_pos(tab, mov.x1, mov.y1, peca)) {
         return false;
     }
-
     i8 dx = mov.x2 - mov.x1;
     i8 dy = mov.y2 - mov.y1;
 
@@ -111,8 +108,8 @@ bool validar_torre(Peca tab[8][8], Movimento mov) {
         return false;
     } // movimento não reto ou parado
 
-    if ((checar_colisao(tab, mov) != LIVRE) &&
-        (checar_colisao(tab, mov) != ATAQUE)) {
+    if ((checar_colisao(tab->posicoes, mov) != LIVRE) &&
+        (checar_colisao(tab->posicoes, mov) != ATAQUE)) {
         // movimento bloqueado ou fora do tabuleiro
         return false;
     }
@@ -120,35 +117,29 @@ bool validar_torre(Peca tab[8][8], Movimento mov) {
     return true;
 }
 
-bool validar_cavalo(Peca tab[8][8], Movimento mov) {
-    Peca peca = tab[mov.y1][mov.x1];
-    if (peca.classe != CAVALO) {
+bool validar_cavalo(Tabuleiro *tab, Movimento mov, Peca peca) {
+    if (cmp_pos(tab, mov.x1, mov.y1, peca)) {
         return false;
     }
-
     i8 dx = mov.x2 - mov.x1;
     i8 dy = mov.y2 - mov.y1;
 
     if (!esta_dentro(mov.x2, mov.y2)) {
         return false;
     }
-    if (tab[mov.y2][mov.x2].cor == peca.cor) {
+    if (cmp_cor_pos(tab, mov.x2, mov.y2, peca)) {
         return false;
     }
 
     return dx * dx + dy * dy == 5; // pitagoras
 }
 
-bool validar_rainha(Peca tab[8][8], Movimento mov) {
-    if (tab[mov.y1][mov.x1].classe != RAINHA) {
-        return false;
-    }
-    return validar_bispo(tab, mov) || validar_torre(tab, mov);
+bool validar_rainha(Tabuleiro *tab, Movimento mov, Peca peca) {
+    return validar_bispo(tab, mov, peca) || validar_torre(tab, mov, peca);
 }
 
-bool validar_rei(Peca tab[8][8], Movimento mov) {
-    Peca peca = tab[mov.y1][mov.x1];
-    if (peca.classe != REI) {
+bool validar_rei(Tabuleiro *tab, Movimento mov, Peca peca) {
+    if (cmp_pos(tab, mov.x1, mov.y1, peca)) {
         return false;
     }
 
@@ -158,27 +149,27 @@ bool validar_rei(Peca tab[8][8], Movimento mov) {
     if (!esta_dentro(mov.x2, mov.y2)) {
         return false;
     }
-    if (tab[mov.y2][mov.x2].cor == peca.cor) {
+    if (cmp_cor_pos(tab, mov.x2, mov.x2, peca)) {
         return false;
     }
 
     return abs(dx) <= 1 && abs(dy) <= 1;
 }
 
-bool validar_movimento(Peca tab[8][8], Movimento mov) {
-    switch (tab[mov.y1][mov.x1].classe) {
+bool validar_jogada(Tabuleiro *tab, Jogada jog) {
+    switch (jog.peca.classe) {
     case BISPO:
-        return validar_bispo(tab, mov);
+        return validar_bispo(tab, jog.mov, jog.peca);
     case CAVALO:
-        return validar_cavalo(tab, mov);
+        return validar_cavalo(tab, jog.mov, jog.peca);
     case TORRE:
-        return validar_torre(tab, mov);
+        return validar_torre(tab, jog.mov, jog.peca);
     case PEAO:
-        return validar_peao(tab, mov);
+        return validar_peao(tab, jog.mov, jog.peca);
     case REI:
-        return validar_rei(tab, mov);
+        return validar_rei(tab, jog.mov, jog.peca);
     case RAINHA:
-        return validar_rainha(tab, mov);
+        return validar_rainha(tab, jog.mov, jog.peca);
     default:
         return false;
     }
