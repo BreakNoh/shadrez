@@ -1,5 +1,5 @@
 #include "xadrez.h"
-#include <stdlib.h>
+#include <stdbool.h>
 
 typedef enum { LIVRE, ATAQUE, BLOQUEADO, FORA_TABULEIRO } Colisao;
 Colisao checar_colisao(Peca tab[8][8], Movimento mov) {
@@ -61,10 +61,34 @@ bool validar_peao(Tabuleiro *tab, Movimento mov, Peca peca) {
 
     Cor cor_alvo = get_pos(tab, mov.x2, mov.y2)->cor;
 
-    if (dx != 0 && (cor_alvo == INDEFINIDA || cor_alvo == peca.cor)) {
-        // movimento diagonal num espaço amigo ou livre
-        // [TODO] impossibilita en passant
+    if (dx != 0 && cor_alvo == peca.cor) {
+        // movimento diagonal num espaço amigo
         return false;
+    } else if (dx != 0 && cor_alvo == INDEFINIDA) {
+        Movimento umov = tab->ultimo_movimento;
+        if (!cmp_pos(tab, umov.x2, umov.y2,
+                     (Peca){PEAO, peca.cor == BRANCA ? PRETA : BRANCA})) {
+            // ultimo movimento não foi de peão
+            return false;
+        }
+
+        bool linha_enpassant = (peca.cor == BRANCA && mov.y1 == 4) ||
+                               (peca.cor == PRETA && mov.y1 == 3);
+
+        if (!linha_enpassant) {
+            // não tá na linha en passant
+            return false;
+        }
+
+        bool alvo_mesma_linha = tab->ultimo_movimento.y2 == mov.y1;
+        bool avanco_duplo =
+            (tab->ultimo_movimento.x1 == tab->ultimo_movimento.x2) &&
+            abs(tab->ultimo_movimento.y2 - tab->ultimo_movimento.y1) == 2;
+        bool alvo_do_lado = abs(tab->ultimo_movimento.x2 - mov.x1) == 1;
+
+        if (!alvo_mesma_linha || !avanco_duplo || !alvo_do_lado) {
+            return false;
+        }
     }
 
     return true;

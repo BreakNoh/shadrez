@@ -1,5 +1,4 @@
 #include "xadrez.h"
-#include <stdbool.h>
 
 Peca new_peca(Classe classe, Cor cor) { return (Peca){classe, cor}; }
 
