@@ -44,8 +44,8 @@ typedef struct {
     Cor cor;
 } Peca;
 
-const Peca PECA_VAZIA = {VAZIO, INDEFINIDA};
-const Movimento MOVIMENTO_VAZIO = {-1, -1, -1, -1};
+static Peca PECA_VAZIA = {VAZIO, INDEFINIDA};
+static Movimento MOVIMENTO_VAZIO = {-1, -1, -1, -1};
 
 Peca new_peca(Classe classe, Cor cor);
 bool cmp_peca(Peca a, Peca b);

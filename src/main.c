@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef TESTE_RUN
 int main(int argc, char *argv[]) {
     Tabuleiro tab = new_tabuleiro(NULL);
 
@@ -44,3 +45,5 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+#endif /* ifdef TESTE */
