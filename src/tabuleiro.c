@@ -95,6 +95,7 @@ void iniciar_posicoes(Tabuleiro *tab, Leiaute leiaute) {
             Peca p = j < ignorar_ate ? PECA_VAZIA : parse_peca(leiaute[i][j]);
             set_pos(tab, j, i, p);
         }
+        ignorar_ate = -1;
     }
 }
 

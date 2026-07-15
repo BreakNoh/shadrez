@@ -14,6 +14,8 @@
 
 #define TAM_TABULEIRO 8
 
+void _debug(char *msg, ...);
+
 typedef enum {
     ENCONTRADA = 'e',
     NENHUMA = 'n',
@@ -78,10 +80,6 @@ bool cmp_classe_pos(Tabuleiro *tab, i8 x, i8 y, Peca peca);
 Peca *get_pos(Tabuleiro *tab, i8 x, i8 y);
 
 // LOGICA
-bool esta_dentro(i8 x, i8 y);
-Peca *raycast(Peca tab[8][8], Movimento mov, u8 *x, u8 *y);
-bool validar_movimento(Peca tab[8][8], Movimento mov);
-
 typedef struct {
     Peca peca;
     bool captura;
@@ -89,6 +87,14 @@ typedef struct {
     Resolucao res;
 } Jogada;
 
+bool esta_dentro(i8 x, i8 y);
+Peca *raycast(Peca tab[8][8], Movimento mov, u8 *x, u8 *y);
+
 Jogada parse_comando(char *cmd, Cor cor, bool *sucesso);
+
 Resolucao resolver_jogada(Tabuleiro *tab, Jogada *jog);
+bool validar_jogada(Tabuleiro *tab, Jogada jog);
+
+// DISPLAY
+void print_tab(Tabuleiro *tab, bool brancas_embaixo);
 #endif // !XADREZ_H

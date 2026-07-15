@@ -1,4 +1,17 @@
 #include "xadrez.h"
+#include <stdarg.h>
+#include <stdio.h>
+
+void _debug(char *msg, ...) {
+    va_list args;
+    va_start(args, msg);
+
+#ifdef TESTE_RUN
+    printf("[DEBUG] ");
+    vprintf(msg, args);
+    printf("\n");
+#endif /* ifdef TESTE_RUN */
+}
 
 bool esta_dentro(i8 x, i8 y) {
     return x >= 0 && x < TAM_TABULEIRO && y >= 0 && y < TAM_TABULEIRO;

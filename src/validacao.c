@@ -1,5 +1,6 @@
 #include "xadrez.h"
 #include <stdbool.h>
+#include <stdio.h>
 
 typedef enum { LIVRE, ATAQUE, BLOQUEADO, FORA_TABULEIRO } Colisao;
 Colisao checar_colisao(Peca tab[8][8], Movimento mov) {
@@ -26,7 +27,11 @@ Colisao checar_colisao(Peca tab[8][8], Movimento mov) {
 }
 
 bool validar_peao(Tabuleiro *tab, Movimento mov, Peca peca) {
-    if (cmp_pos(tab, mov.x1, mov.y1, peca)) {
+    if (!cmp_pos(tab, mov.x1, mov.y1, peca)) {
+        Peca *p = get_pos(tab, mov.x1, mov.y1);
+        _debug("peca na posicão inicial (%c, %d) não condiz (%c%c != %c%c)",
+               'A' + mov.x1, mov.y1 + 1, p->classe, p->cor, peca.classe,
+               peca.cor);
         return false;
     }
 
@@ -34,15 +39,15 @@ bool validar_peao(Tabuleiro *tab, Movimento mov, Peca peca) {
     i8 dx = mov.x2 - mov.x1;
 
     if (dy == 0) {
-        // sem avanço vertical
+        _debug("sem avanço vertical");
         return false;
     }
     if (abs(dx) > 1) {
-        // movimento horizontal maior que 1
+        _debug("movimento horizontal maior que 1");
         return false;
     }
     if (abs(dy) > 2) {
-        // avanço vertical maior que 2
+        _debug("avanço vertical maior que 2");
         return false;
     }
 
@@ -50,25 +55,27 @@ bool validar_peao(Tabuleiro *tab, Movimento mov, Peca peca) {
                         (peca.cor == BRANCA && mov.y1 == 1);
 
     if ((dy > 0 && peca.cor == PRETA) || (dy < 0 && peca.cor == BRANCA)) {
-        // branca descendo ou preta subindo
+        _debug("branca descendo ou preta subindo");
         return false;
     }
 
     if (abs(dy) == 2 && !casa_inicial) {
-        // avanco duplo fora da casa incial
+        _debug("avanco duplo fora da casa incial");
         return false;
     }
 
     Cor cor_alvo = get_pos(tab, mov.x2, mov.y2)->cor;
 
     if (dx != 0 && cor_alvo == peca.cor) {
-        // movimento diagonal num espaço amigo
+        _debug("movimento diagonal num espaço amigo");
         return false;
     } else if (dx != 0 && cor_alvo == INDEFINIDA) {
         Movimento umov = tab->ultimo_movimento;
         if (!cmp_pos(tab, umov.x2, umov.y2,
                      (Peca){PEAO, peca.cor == BRANCA ? PRETA : BRANCA})) {
-            // ultimo movimento não foi de peão
+            Peca *p = get_pos(tab, umov.x2, umov.y2);
+            _debug("ultimo movimento não foi de peão inimigo (%d, %d)(%c, %c)",
+                   umov.x2, umov.y2, p->classe, p->cor);
             return false;
         }
 
@@ -76,7 +83,7 @@ bool validar_peao(Tabuleiro *tab, Movimento mov, Peca peca) {
                                (peca.cor == PRETA && mov.y1 == 3);
 
         if (!linha_enpassant) {
-            // não tá na linha en passant
+            _debug("não tá na linha en passant");
             return false;
         }
 
@@ -86,7 +93,12 @@ bool validar_peao(Tabuleiro *tab, Movimento mov, Peca peca) {
             abs(tab->ultimo_movimento.y2 - tab->ultimo_movimento.y1) == 2;
         bool alvo_do_lado = abs(tab->ultimo_movimento.x2 - mov.x1) == 1;
 
-        if (!alvo_mesma_linha || !avanco_duplo || !alvo_do_lado) {
+        if (!alvo_do_lado) {
+            _debug("alvo não está no lado");
+            return false;
+        }
+        if (!avanco_duplo) {
+            _debug("ultimo movimento não foi duplo");
             return false;
         }
     }
