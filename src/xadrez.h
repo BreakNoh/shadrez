@@ -32,15 +32,19 @@ typedef struct {
 
 // PECA
 typedef enum {
-    VAZIO = '[',
-    PEAO = 'P',
-    BISPO = 'B',
-    CAVALO = 'C',
-    TORRE = 'T',
-    RAINHA = 'D',
-    REI = 'R'
+    VAZIO = -1,
+    REI = L'♔', // codigo rei branco
+    RAINHA,
+    TORRE,
+    BISPO,
+    CAVALO,
+    PEAO,
 } Classe;
-typedef enum { BRANCA = 'b', PRETA = 'p', INDEFINIDA = ']' } Cor;
+typedef enum {
+    INDEFINIDA = -1,
+    BRANCA = 0,
+    PRETA = L'♚' - L'♔' // distancia rei branco e rei preto
+} Cor;
 typedef struct {
     Classe classe;
     Cor cor;
