@@ -2,12 +2,15 @@
 #include <stdio.h>
 #include <wchar.h>
 
-const wchar_t COR_PECA_BRANCA[] = L"\u001b[1;39m";
-const wchar_t COR_PECA_PRETA[] = L"\u001b[1;32m";
+#define SALVAR_POSICAO "\x1b[s"
+#define VOLTAR_POSICAO "\x1b[u"
 
-const wchar_t COR_FUNDO_BRANCA[] = L"\u001b[48;5;234m";
-const wchar_t COR_FUNDO_PRETA[] = L"\u001b[40m";
-const wchar_t LIMPAR_ESTILO[] = L"\u001b[0m";
+const wchar_t COR_PECA_BRANCA[] = L"\x1b[1;39m";
+const wchar_t COR_PECA_PRETA[] = L"\x1b[1;32m";
+
+const wchar_t COR_FUNDO_BRANCA[] = L"\x1b[48;5;234m";
+const wchar_t COR_FUNDO_PRETA[] = L"\x1b[40m";
+const wchar_t LIMPAR_ESTILO[] = L"\x1b[0m";
 
 const wchar_t *cor_fundo_pos(i8 x, i8 y) {
     return (x + y) % 2 == 1 ? COR_FUNDO_BRANCA : COR_FUNDO_PRETA;
@@ -31,6 +34,9 @@ const wchar_t *cor_peca(Peca p) {
         return COR_PECA_PRETA;
     }
 }
+
+void salvar_posicao_cursor() { printf(SALVAR_POSICAO); }
+void voltar_posicao_cursor() { printf(VOLTAR_POSICAO); }
 
 void print_tab(Tabuleiro *tab, bool brancas_embaixo) {
     for (int i = 0; i < 8; i++) {

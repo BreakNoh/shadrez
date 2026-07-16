@@ -1,5 +1,6 @@
 #include "xadrez.h"
 #include <locale.h>
+#include <stdio.h>
 
 #ifndef TESTE_RUN
 int main(int argc, char *argv[]) {
@@ -7,7 +8,12 @@ int main(int argc, char *argv[]) {
     Tabuleiro tab = new_tabuleiro(LEIAUTE_PADRAO);
 
     char comando[11] = {0};
-    print_tab(&tab, true);
+    salvar_posicao_cursor();
+
+    for (int i = 0; i < 5; i++) {
+        voltar_posicao_cursor();
+        print_tab(&tab, true);
+    }
 
     // while (true) {
     //     print_tab(&tab, true);

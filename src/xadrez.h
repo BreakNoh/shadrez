@@ -101,4 +101,6 @@ bool validar_jogada(Tabuleiro *tab, Jogada jog);
 
 // DISPLAY
 void print_tab(Tabuleiro *tab, bool brancas_embaixo);
+void salvar_posicao_cursor();
+void voltar_posicao_cursor();
 #endif // !XADREZ_H
